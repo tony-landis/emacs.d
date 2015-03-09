@@ -43,8 +43,9 @@
     color-theme-sanityinc-tomorrow
 
     ;;;; Lisp
-    smartparens
     rainbow-delimiters
+    paredit 
+    evil-paredit 
 
     ;;;; Clojure
     clojure-mode
@@ -60,7 +61,7 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-
+(package-install 'evil-paredit)
 
 ;;;; Globals
 
@@ -164,104 +165,28 @@
 
 
 ;;;; Colors & Appearance
-
-;(load-theme 'solarized-dark t)
+;;;;
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/custom-themes")
 (add-to-list 'custom-theme-load-path "~/.emacs.d.tony/custom-themes")
 
 (load-theme 'blackboard t)
+;;(load-theme 'solarized-dark t)
 ;;(load-theme 'railscasts t)
 ;;(load-theme 'tomorrow-night-bright t)
 ;;(load-theme 'tango-dark t)
 
 
-
-
-;;;; Lisp
-
-;; smartparens
-(require 'smartparens-config)
-
-(smartparens-global-mode 1)
-(show-smartparens-global-mode t)
-
-(add-hook 'clojure-mode-hook 'smartparens-strict-mode)
-(add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
-
-(define-minor-mode sp-evil-lisp-mode "Smartparens Evil Lisp Mode"
-  :keymap (make-sparse-keymap))
-(evil-define-key 'insert 'sp-evil-lisp-mode-map "DEL" 'sp-backward-delete-char)
-(add-hook 'clojure-mode-hook 'sp-evil-lisp-mode)
-
-;;(define-key sp-keymap (kbd "M-k") 'sp-backward-sexp)
-(define-key sp-keymap (kbd "M-j") 'sp-next-sexp)
-
-(define-key sp-keymap (kbd "M-S-j") 'sp-down-sexp)
-(define-key sp-keymap (kbd "M-S-k") 'sp-backward-up-sexp)
-
-(define-key sp-keymap (kbd "M-l") 'sp-forward-sexp)
-(define-key sp-keymap (kbd "M-h") 'sp-previous-sexp)
-
-(define-key sp-keymap (kbd "M-u") 'sp-up-sexp)
-(define-key sp-keymap (kbd "M-d") 'sp-backward-down-sexp)
-(define-key sp-keymap (kbd "M-B") 'sp-beginning-of-sexp)
-(define-key sp-keymap (kbd "M-W") 'sp-end-of-sexp)
-
-;;(define-key sp-keymap (kbd "M-w") 'sp-forward-symbol)
-(define-key sp-keymap (kbd "M-b") 'sp-backward-symbol)
-
-(define-key emacs-lisp-mode-map (kbd ")") 'sp-up-sexp)
-
-(define-key sp-keymap (kbd "C-M-t") 'sp-transpose-sexp)
-
-;;(define-key sp-keymap (kbd "C-k") 'sp-kill-sexp)
-(define-key sp-keymap (kbd "C-M-y") 'sp-copy-sexp)
-
-;; (define-key sp-keymap (kbd "C-M-k") 'sp-unwrap-sexp)
-;; (define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
-
-(define-key sp-keymap (kbd "C-M-l") 'sp-forward-slurp-sexp)
-(define-key sp-keymap (kbd "C-<left>") 'sp-forward-barf-sexp)
-(define-key sp-keymap (kbd "C-<right>") 'sp-forward-slurp-sexp)
-(define-key sp-keymap (kbd "C-M-h") 'sp-forward-barf-sexp)
-(define-key sp-keymap (kbd "C-M-S-h") 'sp-backward-slurp-sexp)
-(define-key sp-keymap (kbd "C-M-S-l") 'sp-backward-barf-sexp)
-
-;; (define-key sp-keymap (kbd "M-D") 'sp-splice-sexp)
-;; (define-key sp-keymap (kbd "C-M-<delete>") 'sp-splice-sexp-killing-forward)
-(define-key sp-keymap (kbd "C-M-S-j") 'sp-splice-sexp-killing-backward)
-(define-key sp-keymap (kbd "C-M-u") 'sp-splice-sexp-killing-backward)
-;; (define-key sp-keymap (kbd "C-S-<backspace>") 'sp-splice-sexp-killing-around)
-
-;; (define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
-;; (define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
-;; (define-key sp-keymap (kbd "C-M-]") 'sp-select-next-thing)
-
-;; (define-key sp-keymap (kbd "H-t") 'sp-prefix-tag-object)
-;; (define-key sp-keymap (kbd "H-p") 'sp-prefix-pair-object)
-;; (define-key sp-keymap (kbd "H-s c") 'sp-convolute-sexp)
-;; (define-key sp-keymap (kbd "H-s a") 'sp-absorb-sexp)
-;; (define-key sp-keymap (kbd "H-s e") 'sp-emit-sexp)
-;; (define-key sp-keymap (kbd "H-s p") 'sp-add-to-previous-sexp)
-;; (define-key sp-keymap (kbd "H-s n") 'sp-add-to-next-sexp)
-;; (define-key sp-keymap (kbd "H-s j") 'sp-join-sexp)
-;; (define-key sp-keymap (kbd "H-s s") 'sp-split-sexp)
-
-
 ;; rainbow-delimiters
+;;
 (require 'rainbow-delimiters)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
-;;;; Clojure
-
-;; clojure-mode
-
-;; cider
+;;;; Clojure, clojure-mode, cider
+;;;;
 
 (require 'cider)
-
 (setq cider-prompt-save-file-on-load nil)
 (setq cider-auto-select-error-buffer nil)
 (setq cider-show-error-buffer nil)
@@ -269,20 +194,17 @@
 (cider-repl-toggle-pretty-printing)
 
 ;; clj-refactor
-
+;;
 (add-hook 'cider-mode-hook (lambda ()
 			     (clj-refactor-mode 1)
 			     (cljr-add-keybindings-with-prefix "C-x C-r")))
 
-;;;; Platform-specific stuff
 
-;; for tmux
-;; (add-hook 'after-make-frame-functions
-;;   (lambda ()
-;;     (when (not window-system)
-;;       ;;(normal-erase-is-backspace-mode 1)
-;;       ;(global-set-key (kbd "C-h") 'delete-backward-char)
-;;       )))
+;;;; EVIL + PAREDIT
+;;;;
+
+(add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+
 
 ;; for OSX
 (when (eq system-type 'darwin) ;; mac specific settings

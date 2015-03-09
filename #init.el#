@@ -43,9 +43,9 @@
     color-theme-sanityinc-tomorrow
 
     ;;;; Lisp
-    ;; smartparens
-    paredit 
     rainbow-delimiters
+    paredit 
+    evil-paredit 
 
     ;;;; Clojure
     clojure-mode
@@ -61,7 +61,7 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-
+(package-install 'evil-paredit)
 
 ;;;; Globals
 
@@ -129,6 +129,7 @@
 
 
 ;; magit
+
 (global-set-key (kbd "C-x g") 'magit-status)
 
 ;; projectile
@@ -147,6 +148,9 @@
       (company-complete-common)
     (indent-according-to-mode)))
 
+;; (global-set-key (kbd "TAB") 'complete-or-indent)
+
+;; idle-highlight-mode
 
 ;; remove annoyint splassh screen
 (setq inhibit-splash-screen t)
@@ -154,39 +158,35 @@
 
 ;; font size
 ;;
-(set-face-attribute 'default (selected-frame) :height 130)
+(Set-face-attribute 'default (selected-frame) :height 130)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C-0") (kbd "C-x C-0"))
 
 
 ;;;; Colors & Appearance
-
-;(load-theme 'solarized-dark t)
+;;;;
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/custom-themes")
 (add-to-list 'custom-theme-load-path "~/.emacs.d.tony/custom-themes")
 
 (load-theme 'blackboard t)
+;;(load-theme 'solarized-dark t)
 ;;(load-theme 'railscasts t)
 ;;(load-theme 'tomorrow-night-bright t)
 ;;(load-theme 'tango-dark t)
 
 
-
 ;; rainbow-delimiters
+;;
 (require 'rainbow-delimiters)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
-;;;; Clojure
-
-;; clojure-mode
-
-;; cider
+;;;; Clojure, clojure-mode, cider
+;;;;
 
 (require 'cider)
-
 (setq cider-prompt-save-file-on-load nil)
 (setq cider-auto-select-error-buffer nil)
 (setq cider-show-error-buffer nil)
@@ -194,20 +194,17 @@
 (cider-repl-toggle-pretty-printing)
 
 ;; clj-refactor
-
+;;
 (add-hook 'cider-mode-hook (lambda ()
 			     (clj-refactor-mode 1)
 			     (cljr-add-keybindings-with-prefix "C-x C-r")))
 
-;;;; Platform-specific stuff
 
-;; for tmux
-;; (add-hook 'after-make-frame-functions
-;;   (lambda ()
-;;     (when (not window-system)
-;;       ;;(normal-erase-is-backspace-mode 1)
-;;       ;(global-set-key (kbd "C-h") 'delete-backward-char)
-;;       )))
+;;;; EVIL + PAREDIT
+;;;;
+
+(add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+
 
 ;; for OSX
 (when (eq system-type 'darwin) ;; mac specific settings
